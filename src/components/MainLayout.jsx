@@ -2,6 +2,7 @@
 import React from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import Header from './Header';
+import ProfileHeader from './ProfileHeader'; // Import ProfileHeader
 import BottomNav from './BottomNav';
 
 const pathToTabName = {
@@ -11,39 +12,53 @@ const pathToTabName = {
   '/profile': 'Профиль',
 };
 
+// Sample User Data (replace with actual data source/context)
+const sampleUserData = {
+  name: 'Пользователь',
+  id: '4321412',
+  avatarUrl: null // Or 'https://randomuser.me/api/portraits/lego/1.jpg'
+};
+
 function MainLayout() {
   const location = useLocation();
-  let pageTitle = "Заказчик"; // Default title
-  let hideSearch = false; // Default search visibility
+  const isProfilePage = location.pathname === '/profile'; // Check if it's the profile page
 
-  // --- Set Header props based on current route ---
-  switch (location.pathname) {
-    case '/requests':
-      pageTitle = "Мои запросы";
-      hideSearch = true;
-      break;
-    case '/catalog':
-      pageTitle = "Каталог Услуг"; // Example: Different title for catalog
-      // hideSearch = false; // Keep search for catalog? Or hide?
-      break;
-    // Add cases for other pages if needed
-    case '/': // Home page
-    default:
-       pageTitle = "Заказчик";
-       hideSearch = false;
-       break;
+  let pageTitle = "Заказчик";
+  let hideSearch = false;
 
+  // Set standard header props if NOT on profile page
+  if (!isProfilePage) {
+    switch (location.pathname) {
+      case '/requests':
+        pageTitle = "Мои запросы";
+        hideSearch = true;
+        break;
+      case '/catalog':
+        pageTitle = "Каталог Услуг";
+        // hideSearch = false; // Example
+        break;
+      // ... other cases ...
+      case '/': // Home page
+      default:
+        pageTitle = "Заказчик";
+        hideSearch = false;
+        break;
+    }
   }
-  // --- End Header props logic ---
 
   const currentTab = pathToTabName[location.pathname] || 'Главная';
 
   return (
     <div className="max-w-sm mx-auto min-h-screen bg-slate-50 flex flex-col shadow-lg relative">
-      {/* Pass dynamic props to Header */}
-      <Header title={pageTitle} hideSearch={hideSearch} />
+      {/* --- Conditionally Render Header --- */}
+      {isProfilePage ? (
+        <ProfileHeader userData={sampleUserData} />
+      ) : (
+        <Header title={pageTitle} hideSearch={hideSearch} />
+      )}
+      {/* --- End Conditional Header --- */}
 
-      {/* Added pt-4 to main content for spacing below sticky header if needed */}
+
       <main className="flex-grow pb-16 pt-4">
         <Outlet />
       </main>

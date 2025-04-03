@@ -2,20 +2,17 @@
 import React from 'react';
 import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
 
-// Reverted to accept isExpanded and onToggle props
-function CategoryItem({ title, subtitle, isExpanded, onToggle }) {
-  return (
-    // Render as a button again
-    <button
-      type="button"
-      onClick={onToggle}
-      className="
-        w-full bg-white p-4 flex justify-between items-center
-        text-left hover:bg-gray-50 transition-colors duration-150
-        focus:outline-none  // Add rounding back here if the parent div doesn't handle it
-      "
-      aria-expanded={isExpanded}
-    >
+// Added showChevron prop, made onToggle/isExpanded optional
+function CategoryItem({
+  title,
+  subtitle,
+  isExpanded, // Optional
+  onToggle,   // Optional
+  onClick,    // Optional general click handler if not used as button
+  showChevron = true, // Default to show chevron
+}) {
+  const content = (
+    <>
       {/* Left side: Title and Subtitle */}
       <div className="flex flex-col">
         <span className="text-base font-medium text-gray-800">{title}</span>
@@ -24,14 +21,39 @@ function CategoryItem({ title, subtitle, isExpanded, onToggle }) {
         )}
       </div>
 
-      {/* Right side: Chevron Icon (changes based on isExpanded) */}
-      {isExpanded ? (
-        <FaChevronUp className="text-gray-500" />
-      ) : (
-        <FaChevronDown className="text-gray-400" />
+      {/* Right side: Chevron Icon */}
+      {showChevron && (
+          isExpanded ? (
+            <FaChevronUp className="text-gray-500" />
+          ) : (
+            <FaChevronDown className="text-gray-400" />
+          )
       )}
-    </button>
+    </>
   );
+
+  // Render as button if onToggle is provided, otherwise as div (potentially clickable if onClick is provided)
+  if (onToggle) {
+    return (
+      <button
+        type="button"
+        onClick={onToggle}
+        className="w-full bg-white p-4 flex justify-between items-center text-left hover:bg-gray-50 transition-colors duration-150 focus:outline-none focus:bg-gray-100"
+        aria-expanded={isExpanded}
+      >
+        {content}
+      </button>
+    );
+  } else {
+    return (
+      <div
+        onClick={onClick} // Use general onClick if provided
+        className={`w-full bg-white p-4 flex justify-between items-center text-left ${onClick ? 'hover:bg-gray-50 cursor-pointer' : ''} transition-colors duration-150`}
+      >
+        {content}
+      </div>
+    );
+  }
 }
 
 export default CategoryItem;

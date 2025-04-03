@@ -7,8 +7,8 @@ function MessageBubble({ text, isSender, timestamp }) {
       <div
         className={`py-2 px-3 rounded-lg max-w-[80%] ${ // Limit width
           isSender
-            ? 'bg-blue-500 text-white' // Sender styles
-            : 'bg-gray-200 text-gray-800' // Receiver styles
+            ? 'bg-[#E5F0FF] text-gray-800' // Sender styles
+            : 'bg-[#FFF9E5] text-gray-800' // Receiver styles
         }`}
       >
         <p className="text-sm">{text}</p>
